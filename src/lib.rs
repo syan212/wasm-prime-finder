@@ -84,6 +84,7 @@ pub fn find_primes() -> Result<(), JsValue> {
     Ok(())
 }
 
+/// Find all primes from `start`(inclusive) to `end`(exclusive) and output to `out`.
 fn get_primes(start: u32, end: u32, out: &mut Vec<u32>) {
     for n in start..end {
         if PRIMES.contains(&n) {
@@ -109,6 +110,8 @@ fn get_primes(start: u32, end: u32, out: &mut Vec<u32>) {
     }
 }
 
+/// Get element from `document` with id `id` and cast into type `T` and raises
+/// `error_messages.0` and `error_messages.1` when element is not found and cast fails, respectively.
 fn get_element<T: JsCast>(document: &Document, id: &str, error_messages: (&str, &str)) -> T {
     document
         .get_element_by_id(id)
