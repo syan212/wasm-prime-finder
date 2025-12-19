@@ -57,40 +57,19 @@ pub fn find_primes() -> Result<(), JsValue> {
     );
     // Show loading
     result_field.set_inner_text("Loading...");
-    // Initialise vector for storing primes
-    let mut primes: Vec<u32> = Vec::new();
     // Match
     match (start_number, end_number) {
         (Ok(s), Ok(e)) => {
+            // Initialise vector for storing primes
+            let mut primes: Vec<u32> = Vec::new();
             if s > e {
                 result_field.set_inner_text("Starting number cannot be greater than end number.");
                 return Ok(());
             }
-            for n in s..e {
-                if PRIMES.contains(&n) {
-                    primes.push(n);
-                    continue;
-                }
-                if PRIMES.iter().any(|p| n % p == 0) || n == 1 {
-                    continue;
-                }
-                let mut i = 5;
-                let mut prime = true;
-                while i * i <= n {
-                    if n % i == 0 || n % (i + 2) == 0 {
-                        prime = false;
-                        break;
-                    }
-                    i += 6;
-                }
-                if !prime {
-                    continue;
-                }
-                primes.push(n);
-            }
+            get_primes(s, e, &mut primes);
             result_field.set_inner_text(
                 &primes
-                    .iter()
+                .iter()
                     .filter_map(|num: &u32| Some(num.to_string()))
                     .collect::<Vec<String>>()
                     .join(", "),
@@ -103,6 +82,31 @@ pub fn find_primes() -> Result<(), JsValue> {
         }
     }
     Ok(())
+}
+
+fn get_primes(start: u32, end: u32, out: &mut Vec<u32>) {
+    for n in start..end {
+        if PRIMES.contains(&n) {
+            out.push(n);
+            continue;
+        }
+        if PRIMES.iter().any(|p| n % p == 0) || n == 1 {
+            continue;
+        }
+        let mut i = 5;
+        let mut prime = true;
+        while i * i <= n {
+            if n % i == 0 || n % (i + 2) == 0 {
+                prime = false;
+                break;
+            }
+            i += 6;
+        }
+        if !prime {
+            continue;
+        }
+        out.push(n);
+    }
 }
 
 fn get_element<T: JsCast>(document: &Document, id: &str, error_messages: (&str, &str)) -> T {
