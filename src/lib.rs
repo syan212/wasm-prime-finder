@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
-use web_sys::{HtmlInputElement, HtmlParagraphElement};
+use wasm_bindgen::JsCast;
+use web_sys::{Document, HtmlInputElement, HtmlParagraphElement};
 
 const PRIMES: [u32; 109] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 
                            53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 
@@ -22,31 +23,26 @@ pub fn find_primes() -> Result<(), JsValue> {
     // Get JS window objects
     let window = web_sys::window().expect("No global `window` exists.");
     let document = window.document().expect("Should have a document on window.");
-    // Start nunmber element
-    let start_number = document
-        .get_element_by_id("start-num")
-        .expect("No element found with expected ID.");
-    let start_number = start_number
-        .dyn_ref::<HtmlInputElement>()
-        .expect("Element should be a input element.")
+    // Start number
+    let start_number = get_element::<HtmlInputElement>(
+        &document, 
+        "start-num", 
+        ("No element found with expected ID.", "Element should be a input element."))
         .value()
         .parse::<u32>();
-    // End number element
-    let end_number = document
-        .get_element_by_id("end-num")
-        .expect("No element found with expected ID.");
-    let end_number = end_number
-        .dyn_ref::<HtmlInputElement>()
-        .expect("Element should be a input element.")
+    // End number
+    let end_number = get_element::<HtmlInputElement>(
+        &document, 
+        "end-num", 
+        ("No element found with expected ID.", "Element should be a input element."))
         .value()
         .parse::<u32>();
     // Result field
-    let result_field = document
-        .get_element_by_id("result-field")
-        .expect("No element found with expected ID.");
-    let result_field = result_field
-        .dyn_ref::<HtmlParagraphElement>()
-        .expect("Element should be a paragraph element.");
+    let result_field: HtmlParagraphElement = get_element(
+        &document, 
+        "result-field", 
+        ("No element found with expected ID.", "Element should be a paragraph element.")
+    );
     // Show loading
     result_field.set_inner_text("Loading...");
     // Initialise vector for storing primes
@@ -63,15 +59,20 @@ pub fn find_primes() -> Result<(), JsValue> {
                     primes.push(n);
                     continue;
                 }
-                if PRIMES.iter().any(|p| n % p == 0) || n == 1{
+                if PRIMES.iter().any(|p| n % p == 0) || n == 1 {
                     continue;
                 }
                 let mut i = 5;
+                let mut prime = true;
                 while i * i <= n {
                     if n % i == 0 || n % (i + 2) == 0 {
-                        continue;
+                        prime = false;
+                        break;
                     }
                     i += 6;
+                }
+                if !prime {
+                    continue;
                 }
                 primes.push(n);
             }
@@ -86,4 +87,16 @@ pub fn find_primes() -> Result<(), JsValue> {
         }
     }
     Ok(())
+}
+
+fn get_element<T: JsCast>(
+    document: &Document,
+    id: &str,
+    error_messages: (&str, &str),
+) -> T {
+    document
+        .get_element_by_id(id)
+        .expect(error_messages.0)
+        .dyn_into::<T>()
+        .expect(error_messages.1)
 }
