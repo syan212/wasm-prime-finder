@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Finder</title>
+</head>
+<body>
+    <script type="module">
+        import init, { find_primes } from './pkg/prime_finder.js';
+
+        init().then(() => {
+            document.getElementById("submit").addEventListener("click", (e) => {
+                find_primes();
+            });
+        })
+    </script>
+    <input id="start-num" type="text">
+    <input id="end-num" type="text">
+    <button id="submit">Find</button>
+    <p id="result-field"></p>
+</body>
+</html>
