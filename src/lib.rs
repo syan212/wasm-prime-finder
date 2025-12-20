@@ -112,7 +112,7 @@ fn get_primes(start: u32, end: u32) -> Vec<u32> {
     let mut i = ((start as f64 / 2310.0).floor() * 2310.0) as u32;
     while i < end {
         for cand_pre in WHEEL {
-            if (start..end).contains(&cand_pre) && cand_pre != 1 {
+            if (start..end).contains(&(cand_pre + i)) && cand_pre + i != 1 {
                 candidates.push(cand_pre + i);
             }
         }
