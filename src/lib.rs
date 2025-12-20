@@ -110,7 +110,6 @@ pub fn find_primes() -> Result<(), JsValue> {
 fn get_primes(start: u32, end: u32) -> Vec<u32> {
     let mut candidates = Vec::new();
     let mut i = ((start as f64 / 2310.0).floor() * 2310.0) as u32;
-    log(&format!("{}", i));
     while i < end {
         for cand_pre in WHEEL {
             if (start..end).contains(&cand_pre) && cand_pre != 1 {
@@ -126,7 +125,7 @@ fn get_primes(start: u32, end: u32) -> Vec<u32> {
     while i * i <= end {
         let mut to_remove: Vec<usize> = Vec::new();
         for (index, cand) in candidates.clone().iter().enumerate() {
-            if (*cand % i == 0 && *cand != i) || (*cand % (i - 2) == 0 && *cand != (i - 2)) {
+            if multiple_and_not_self(*cand, i) || multiple_and_not_self(*cand, i - 2) {
                 to_remove.push(index);
             }
         }
@@ -137,6 +136,12 @@ fn get_primes(start: u32, end: u32) -> Vec<u32> {
         i += 6;
     }
     candidates
+}
+
+/// Return true if dividend is a multiple of divisor and is not divisor.
+/// Equivalent to `dividend % divisor == 0 && dividend != divisor`.
+fn multiple_and_not_self(dividend: u32, divisor: u32) -> bool {
+    dividend % divisor == 0 && dividend != divisor
 }
 
 /// Get element from `document` with id `id` and cast into type `T` and raises
