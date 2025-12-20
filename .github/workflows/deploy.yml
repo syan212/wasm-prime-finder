@@ -1,0 +1,50 @@
+name: Deploy to Github Pages
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c # v1.15.2
+      
+      - name: Build WASM
+        run: |
+          cargo install wasm-pack
+          wasm-pack build --target web
+       
+      - name: Pack
+        run: |
+          mkdir site/
+          mv pkg/ site/pkg
+          mv index.html site/index.html
+          mv script.js site/script.js
+          mv styles.css site/styles.css
+      
+      - name: Upload files
+        uses: actions/upload-pages-artifact@v4.0.0
+        with:
+          path: site/
+  
+  Deploy:
+    needs: Build
+    runs-on: ubuntu-latest
+    
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
