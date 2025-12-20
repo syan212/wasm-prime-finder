@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{window, Document, HtmlInputElement, HtmlParagraphElement};
 
-/// Wheel genrated from 2, 3, 5, 7, 11
+/// Wheel generated from 2, 3, 5, 7, 11
 const WHEEL: [u32; 485] = [
     1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89,
     97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 169, 173, 179, 181,
@@ -99,7 +99,7 @@ pub fn find_primes() -> Result<(), JsValue> {
         }
         (_, _) => {
             result_field.set_inner_text(
-                "Invalid number(s). Make sure that both numbers are posistive integers.",
+                "Invalid number(s). Make sure that both numbers are positive integers.",
             );
         }
     }

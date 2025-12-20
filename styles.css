@@ -1,0 +1,21 @@
+#form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input {
+    margin-block: 0.5em;
+}
+
+button {
+    margin-right: auto;
+    margin-block: 0.5em;
+    background-color: aqua;
+    border-radius: 1em;
+    border-color: black;
+    width: 5em;
+}
+
+body {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}

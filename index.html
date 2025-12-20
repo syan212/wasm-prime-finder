@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
     <title>Prime Finder</title>
 </head>
 <body>
-    <script type="module">
-        import init, { find_primes } from './pkg/prime_finder.js';
-
-        init().then(() => {
-            document.getElementById("submit").addEventListener("click", (e) => {
-                find_primes();
-            });
-        })
-    </script>
-    <input id="start-num" type="text">
-    <input id="end-num" type="text">
-    <button id="submit">Find</button>
-    <p id="result-field"></p>
+    <script type="module" src="script.js"></script>
+    <h1>Prime finder</h1>
+    <div id="form">
+        <div class="input">
+            <label for="start-num">Starting number (inclusive):</label>
+            <input id="start-num" name="start-num" type="number">
+        </div>
+        <div class="input">
+            <label for="end-num">Ending number (exclusive):</label>
+            <input id="end-num" name="end-num" type="number">
+        </div>
+        <button id="submit">Find</button>
+        <p id="result-field"></p>
+    </div>
 </body>
 </html>
