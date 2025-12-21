@@ -44,6 +44,9 @@ extern "C" {
 pub fn find_primes() -> Result<(), JsValue> {
     // Get JS window objects
     let window = window().expect("No global `window` exists.");
+    let performance = window
+        .performance()
+        .expect("Window should have `performance`");
     let document = window
         .document()
         .expect("Should have a document on window.");
@@ -88,13 +91,20 @@ pub fn find_primes() -> Result<(), JsValue> {
                 result_field.set_inner_text("Starting number cannot be greater than end number.");
                 return Ok(());
             }
+            let start = performance.now();
             let primes = get_primes(s, e);
+            let end = performance.now();
             result_field.set_inner_text(
-                &primes
-                    .iter()
-                    .map(|num: &u32| num.to_string())
-                    .collect::<Vec<String>>()
-                    .join(", "),
+                &format!(
+                    "Number of primes found: {}. Time taken: {:.5}ms.\nPrimes found: {}",
+                    primes.len(),
+                    end - start,
+                    primes
+                        .iter()
+                        .map(|num: &u32| num.to_string())
+                        .collect::<Vec<String>>()
+                        .join(", ")
+                )
             );
         }
         (_, _) => {
@@ -108,6 +118,7 @@ pub fn find_primes() -> Result<(), JsValue> {
 
 /// Find all primes from `start`(inclusive) to `end`(exclusive) and return a `Vec<u32>` of the results.
 fn get_primes(start: u32, end: u32) -> Vec<u32> {
+    // First, get candidates using wheel
     let mut candidates = Vec::new();
     let mut i = ((start as f64 / 2310.0).floor() * 2310.0) as u32;
     while i < end {
@@ -118,13 +129,15 @@ fn get_primes(start: u32, end: u32) -> Vec<u32> {
         }
         i += 2310;
     }
+    // If it's empty, return an empty vector
     if candidates.is_empty() {
         return Vec::new();
     }
+    // Check for 6k ± 1 greater than 11
     let mut i = 13;
     while i * i <= end {
         let mut to_remove: Vec<usize> = Vec::new();
-        for (index, cand) in candidates.clone().iter().enumerate() {
+        for (index, cand) in candidates.iter().enumerate() {
             if multiple_and_not_self(*cand, i) || multiple_and_not_self(*cand, i - 2) {
                 to_remove.push(index);
             }

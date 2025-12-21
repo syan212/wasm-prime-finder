@@ -2,7 +2,9 @@
 
 Simple website for finding primes made using WASM.
 
-## How to run
+[View online](https://syan212.github.io/wasm-prime-finder/)
+
+## How to run locally
 
 Ensure cargo is installed and run
 ```shell
